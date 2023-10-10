@@ -15,7 +15,7 @@ function EasyStore:SetData(DatastoreName : string, Key : any, Data)
 	if Key and Data then
 		for Attempts=Attempts, 10 do
 			local Success, SaveHash = pcall(Datastore.SetAsync, Datastore, Key, Data)
-			print(Success, SaveHash)
+			
 			if Success then
 				return SaveHash
 			end
@@ -55,9 +55,10 @@ function EasyStore:GetData(DatastoreName : string, Key : any)
 	local Attempts = 1
 	
 	for Attempts=Attempts, 10 do
-		local Success, Data = pcall(Datastore.GetAsync, Key)
+		local Success, Data = pcall(Datastore.GetAsync, Datastore, Key)
 		
 		if Success then
+			print(Data)
 			return Data
 		end
 	end
