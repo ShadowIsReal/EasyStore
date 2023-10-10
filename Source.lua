@@ -26,7 +26,7 @@ function EasyStore:SetData(DatastoreName : string, Key : any, Data)
 	end
 end
 
-function EasyStore:UpdateData(DatastoreName : string, Key : any, Data : SharedTable)
+function EasyStore:UpdateData(DatastoreName : string, Key : any, Data)
 	local Datastore = DataStoreService:GetDataStore(DatastoreName)
 
 	local Attempts = 1
