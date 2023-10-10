@@ -1,4 +1,5 @@
 local EasyStore = {}
+local CachedDatastores = {}
 
 local DataStoreService = game:GetService("DataStoreService")
 
@@ -65,6 +66,9 @@ function EasyStore:RemoveData(DatastoreName : string, Key : any)
 end
 
 function EasyStore:GetDatastore(DatastoreName : string)
+	if CachedDatastores[DatastoreName] then
+		return CachedDatastores[DatastoreName]
+	end
 	local RealDatastore = DataStoreService:GetDataStore(DatastoreName)
 	
 	local Datastore = {}
@@ -92,6 +96,10 @@ function EasyStore:GetDatastore(DatastoreName : string)
 	Datastore.UpdateAsync = function(Key : any, Callback : any)
 		return EasyStore:UpdateData(DatastoreName, Key, Callback)
 	end
+	
+	CachedDatastores[DatastoreName] = Datastore
+	
+	return Datastore
 end
 
 function EasyStore:GetRawDatastore(DatastoreName : string)
