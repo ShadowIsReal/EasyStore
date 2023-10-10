@@ -111,12 +111,14 @@ end
 
 function EasyStore:AutoUpdate()
 	local NewestSource = HttpService:GetAsync("https://raw.githubusercontent.com/ShadowIsReal/EasyStore/main/Source.lua")
-	print(NewestSource)
-	local VersionString = string.find(NewestSource, "Version = ")
-	print(VersionString)
+	local FoundVersion = string.find(NewestSource, "Version = ")
+	local VersionString = string.sub(NewestSource, FoundVersion+(#"Version = "), FoundVersion+(#"Version = ")+5)
+	VersionString = VersionString:gsub("\"", "")
 	
 	if tonumber(VersionString) > tonumber(Version) then
+		warn("Hardcoded source for EasyStore is out of date please update it! \n [LOADING NEW SOURCE]")
 		EasyStore = loadstring(NewestSource)()
+		print("EasyStore version "..VersionString.." loaded successfully!")
 	end
 end
 
