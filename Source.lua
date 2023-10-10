@@ -3,7 +3,7 @@ local CachedDatastores = {}
 
 local Version = "1.01"
 
-local DataStoreService = game.DataStoreService
+local DataStoreService = game:GetService("DataStoreService")
 local HttpService = game.HttpService
 
 function EasyStore:SetData(DatastoreName : string, Key : any, Data : SharedTable)
