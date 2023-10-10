@@ -6,7 +6,7 @@ local Version = "1.01"
 local DataStoreService = game:GetService("DataStoreService")
 local HttpService = game.HttpService
 
-function EasyStore:SetData(DatastoreName : string, Key : any, Data : SharedTable)
+function EasyStore:SetData(DatastoreName : string, Key : any, Data)
 	local Datastore = DataStoreService:GetDataStore(DatastoreName)
 	
 	local Attempts = 1
