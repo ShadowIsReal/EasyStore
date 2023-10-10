@@ -1,8 +1,8 @@
-local ShadowStore = {}
+local EasyStore = {}
 
 local DataStoreService = game:GetService("DataStoreService")
 
-function ShadowStore:SetData(DatastoreName : string, Key : any, Data : SharedTable)
+function EasyStore:SetData(DatastoreName : string, Key : any, Data : SharedTable)
 	local Datastore = DataStoreService:GetDataStore(DatastoreName)
 	
 	local Attempts = 1
@@ -22,7 +22,7 @@ function ShadowStore:SetData(DatastoreName : string, Key : any, Data : SharedTab
 	end
 end
 
-function ShadowStore:UpdateData(DatastoreName : string, Key : any, Data : SharedTable)
+function EasyStore:UpdateData(DatastoreName : string, Key : any, Data : SharedTable)
 	local Datastore = DataStoreService:GetDataStore(DatastoreName)
 
 	local Attempts = 1
@@ -42,7 +42,7 @@ function ShadowStore:UpdateData(DatastoreName : string, Key : any, Data : Shared
 	end
 end
 
-function ShadowStore:GetData(DatastoreName : string, Key : any)
+function EasyStore:GetData(DatastoreName : string, Key : any)
 	local Datastore = DataStoreService:GetDataStore(DatastoreName)
 	
 	local Attempts = 1
@@ -58,13 +58,13 @@ function ShadowStore:GetData(DatastoreName : string, Key : any)
 	-- handle further errors here
 end
 
-function ShadowStore:RemoveData(DatastoreName : string, Key : any)
+function EasyStore:RemoveData(DatastoreName : string, Key : any)
 	local Datastore = DataStoreService:GetDataStore(DatastoreName)
 	
 	return Datastore:RemoveAsync(Key)
 end
 
-function ShadowStore:GetDatastore(DatastoreName : string)
+function EasyStore:GetDatastore(DatastoreName : string)
 	local RealDatastore = DataStoreService:GetDataStore(DatastoreName)
 	
 	local Datastore = {}
@@ -75,27 +75,27 @@ function ShadowStore:GetDatastore(DatastoreName : string)
 	})
 	
 	Datastore.SetAsync = function(Key : any, Data : SharedTable)
-		return ShadowStore:SetData(DatastoreName, Key, Data)
+		return EasyStore:SetData(DatastoreName, Key, Data)
 	end
 	Datastore.SetData = Datastore.SetAsync
 	
 	Datastore.GetAsync = function(Key : any)
-		return ShadowStore:GetData(DatastoreName, Key)
+		return EasyStore:GetData(DatastoreName, Key)
 	end
 	Datastore.GetData = Datastore.GetAsync
 	
 	Datastore.RemoveAsync = function(Key : any)
-		return ShadowStore:RemoveData(DatastoreName, Key)
+		return EasyStore:RemoveData(DatastoreName, Key)
 	end
 	Datastore.RemoveData =  Datastore.RemoveAsync
 	
 	Datastore.UpdateAsync = function(Key : any, Callback : any)
-		return ShadowStore:UpdateData(DatastoreName, Key, Callback)
+		return EasyStore:UpdateData(DatastoreName, Key, Callback)
 	end
 end
 
-function ShadowStore:GetRawDatastore(DatastoreName : string)
+function EasyStore:GetRawDatastore(DatastoreName : string)
 	return DataStoreService:GetDataStore(DatastoreName)
 end
 
-return ShadowStore
+return EasyStore
