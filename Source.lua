@@ -1,4 +1,5 @@
 local EasyStore = {}
+local CachedEasyDatastores = {}
 local CachedDatastores = {}
 
 local Version = "1.01"
@@ -7,17 +8,19 @@ local DataStoreService = game:GetService("DataStoreService")
 local HttpService = game.HttpService
 
 function EasyStore:SetData(DatastoreName : string, Key : any, Data)
-	local Datastore = DataStoreService:GetDataStore(DatastoreName)
+	local Datastore = CachedDatastores[DatastoreName] or DataStoreService:GetDataStore(DatastoreName)
 	
 	local Attempts = 1
 	
 	if Key and Data then
 		for Attempts=Attempts, 10 do
-			local Success, SaveHash = pcall(DataStoreService.SetAsync, Key, Data)
-			
+			local Success, SaveHash = pcall(Datastore.SetAsync, Datastore, Key, Data)
+			print(Success, SaveHash)
 			if Success then
 				return SaveHash
 			end
+			
+			--task.wait(1)
 		end
 		
 		-- handle further errors here
@@ -27,13 +30,13 @@ function EasyStore:SetData(DatastoreName : string, Key : any, Data)
 end
 
 function EasyStore:UpdateData(DatastoreName : string, Key : any, Data)
-	local Datastore = DataStoreService:GetDataStore(DatastoreName)
+	local Datastore = CachedDatastores[DatastoreName] or DataStoreService:GetDataStore(DatastoreName)
 
 	local Attempts = 1
 
 	if Key and Data then
 		for Attempts=Attempts, 10 do
-			local Success, Tuple = pcall(DataStoreService.SetAsync, Key, Data)
+			local Success, Tuple = pcall(Datastore.SetAsync, Datastore, Key, Data)
 
 			if Success then
 				return Tuple
@@ -47,8 +50,8 @@ function EasyStore:UpdateData(DatastoreName : string, Key : any, Data)
 end
 
 function EasyStore:GetData(DatastoreName : string, Key : any)
-	local Datastore = DataStoreService:GetDataStore(DatastoreName)
-	
+	local Datastore = CachedDatastores[DatastoreName] or DataStoreService:GetDataStore(DatastoreName)
+
 	local Attempts = 1
 	
 	for Attempts=Attempts, 10 do
@@ -63,14 +66,14 @@ function EasyStore:GetData(DatastoreName : string, Key : any)
 end
 
 function EasyStore:RemoveData(DatastoreName : string, Key : any)
-	local Datastore = DataStoreService:GetDataStore(DatastoreName)
-	
+	local Datastore = CachedDatastores[DatastoreName] or DataStoreService:GetDataStore(DatastoreName)
+
 	return Datastore:RemoveAsync(Key)
 end
 
 function EasyStore:GetDatastore(DatastoreName : string)
-	if CachedDatastores[DatastoreName] then
-		return CachedDatastores[DatastoreName]
+	if CachedEasyDatastores[DatastoreName] then
+		return CachedEasyDatastores[DatastoreName]
 	end
 	local RealDatastore = DataStoreService:GetDataStore(DatastoreName)
 	
@@ -100,7 +103,7 @@ function EasyStore:GetDatastore(DatastoreName : string)
 		return EasyStore:UpdateData(DatastoreName, Key, Callback)
 	end
 	
-	CachedDatastores[DatastoreName] = Datastore
+	CachedEasyDatastores[DatastoreName] = Datastore
 	
 	return Datastore
 end
