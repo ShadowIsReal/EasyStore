@@ -58,7 +58,6 @@ function EasyStore:GetData(DatastoreName : string, Key : any)
 		local Success, Data = pcall(Datastore.GetAsync, Datastore, Key)
 		
 		if Success then
-			print(Data)
 			return Data
 		end
 	end
