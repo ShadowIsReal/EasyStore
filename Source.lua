@@ -1,7 +1,10 @@
 local EasyStore = {}
 local CachedDatastores = {}
 
-local DataStoreService = game:GetService("DataStoreService")
+local Version = "1.01"
+
+local DataStoreService = game.DataStoreService
+local HttpService = game.HttpService
 
 function EasyStore:SetData(DatastoreName : string, Key : any, Data : SharedTable)
 	local Datastore = DataStoreService:GetDataStore(DatastoreName)
@@ -104,6 +107,17 @@ end
 
 function EasyStore:GetRawDatastore(DatastoreName : string)
 	return DataStoreService:GetDataStore(DatastoreName)
+end
+
+function EasyStore:AutoUpdate()
+	local NewestSource = HttpService:GetAsync("https://raw.githubusercontent.com/ShadowIsReal/EasyStore/main/Source.lua")
+	print(NewestSource)
+	local VersionString = string.find(NewestSource, "Version = ")
+	print(VersionString)
+	
+	if tonumber(VersionString) > tonumber(Version) then
+		EasyStore = loadstring(NewestSource)()
+	end
 end
 
 return EasyStore
